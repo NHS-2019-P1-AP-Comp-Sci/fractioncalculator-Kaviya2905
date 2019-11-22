@@ -15,13 +15,15 @@ public class FracCalc {
     	
     	//System.out.println(produceAnswer(fraction));
     	String fraction = "";
-    	while (fraction != "quit") {
+    	while (!fraction.equals("quit")) {
     		Scanner userInput = new Scanner(System.in);
     		System.out.println("Enter a fraction experession");
     		fraction = userInput.nextLine();
-    		if (fraction != "quit") {
+    		//System.out.print(fraction);
+    		if (!fraction.equals ("quit")) {
     			System.out.println(produceAnswer(fraction));
     		}
+    		
     	}
     }
 
@@ -55,11 +57,89 @@ public class FracCalc {
     	firstNumber = input.substring(0, firstNumEnd);
     	lastNumber = input.substring(lastNumStart, end);
     	
-        return lastNumber;
+    	return SecondOperand(lastNumber);
+    	//return FirstOperand(firstNumber);
+        //return lastNumber;
+        
+        
     }
 
     // TODO: Fill in the space below with any helper methods that you think you will need
-
+    public static String FirstOperand(String num) {
+    	String WholeNumber = "";
+    	int value1 = num.indexOf("_");
+    	int value2 = num.indexOf("/");
+    	if (value1 == -1 && value2 == -1) {
+    		WholeNumber = num; 
+    	}
+    	else if (value1 == -1 && value2 != -1) {
+    		WholeNumber = "0";
+    	}
+    	else {
+    		WholeNumber = num.substring(0, num.indexOf("_"));
+    	}
+    	
+    	String Numerator = "";
+    	if (value2 == -1) {
+    		Numerator = "0";
+    	}
+    	else if (value2 != -1 && value1 == -1) {
+    		Numerator = num.substring(0, num.indexOf("/"));
+    	}
+    	else {
+    		Numerator = num.substring(num.indexOf("_") + 1, num.indexOf("/"));
+    	}
+    	
+    	String denominator = "";
+    	if ( value2 == -1) {
+    		denominator = "1";
+    	}
+    	else {
+    		denominator = num.substring(num.indexOf("/")+ 1);
+    	}
+    	
+    	
+    	String FirstNumString = "whole:" + WholeNumber + " numerator:" + Numerator + " denominator:" + denominator;
+    	return FirstNumString;
+    }
+    
+    public static String SecondOperand(String num) {
+    	String WholeNumber = "";
+    	int value1 = num.indexOf("_");
+    	int value2 = num.indexOf("/");
+    	if (value1 == -1 && value2 == -1) {
+    		WholeNumber = num; 
+    	}
+    	else if (value1 == -1 && value2 != -1) {
+    		WholeNumber = "0";
+    	}
+    	else {
+    		WholeNumber = num.substring(0, num.indexOf("_"));
+    	}
+    	
+    	String Numerator = "";
+    	if (value2 == -1) {
+    		Numerator = "0";
+    	}
+    	else if (value2 != -1 && value1 == -1) {
+    		Numerator = num.substring(0, num.indexOf("/"));
+    	}
+    	else {
+    		Numerator = num.substring(num.indexOf("_") + 1, num.indexOf("/"));
+    	}
+    	
+    	String denominator = "";
+    	if ( value2 == -1) {
+    		denominator = "1";
+    	}
+    	else {
+    		denominator = num.substring(num.indexOf("/")+ 1);
+    	}
+    	
+    	
+    	String SecondNumString = "whole:" + WholeNumber + " numerator:" + Numerator + " denominator:" + denominator;
+    	return SecondNumString;
+    }
 }
 
 
