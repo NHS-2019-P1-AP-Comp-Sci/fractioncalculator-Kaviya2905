@@ -9,17 +9,11 @@ public class FracCalc {
 
     public static void main(String[] args){
         // TODO: Read the input from the user and call produceAnswer with an equation
-    	
-    	//System.out.println("Enter a fraction experession");
-    	//String fraction = userInput.nextLine();
-    	
-    	//System.out.println(produceAnswer(fraction));
     	String fraction = "";
     	while (!fraction.equals("quit")) {
     		Scanner userInput = new Scanner(System.in);
     		System.out.println("Enter a fraction experession");
     		fraction = userInput.nextLine();
-    		//System.out.print(fraction);
     		if (!fraction.equals ("quit")) {
     			System.out.println(produceAnswer(fraction));
     		}
@@ -38,6 +32,7 @@ public class FracCalc {
     public static String produceAnswer(String input)
     {
         // TODO: Implement this function to produce the solution to the input
+    	//declaring variables to separate first term, second term and operator. 
     	int end;
     	int lastNumStart;
     	int space;
@@ -53,100 +48,193 @@ public class FracCalc {
     	firstNumEnd = space;   	
     	operatorIndex = input.indexOf(" ") + 1;
     	
+    	// separated operator, first term and second term
     	operator = input.substring(operatorIndex, (operatorIndex + 1));
     	firstNumber = input.substring(0, firstNumEnd);
     	lastNumber = input.substring(lastNumStart, end);
     	
-    	return SecondOperand(lastNumber);
-    	//return FirstOperand(firstNumber);
-        //return lastNumber;
-        
-        
+    	
+    	//FIRST TERM SEPERATION
+    	//Separating first term into numerator, denominator and wholeNumber 
+    	String firstWholeNumberStr = "";
+    	int firstWholeNumberInt = 0;
+    	int firstNumUnderScore = firstNumber.indexOf("_");
+    	int firstNumSlash = firstNumber.indexOf("/");
+    	
+    	if (firstNumUnderScore == -1 && firstNumSlash == -1) {
+    		firstWholeNumberStr = firstNumber;
+    		firstWholeNumberInt = Integer.parseInt(firstWholeNumberStr);
+    	}
+    	else if (firstNumUnderScore == -1 && firstNumSlash != -1) {
+    		firstWholeNumberStr = "0";
+    		firstWholeNumberInt = Integer.parseInt(firstWholeNumberStr);
+    	}
+    	else {
+    		firstWholeNumberStr = firstNumber.substring(0, firstNumber.indexOf("_"));
+    		firstWholeNumberInt = Integer.parseInt(firstWholeNumberStr);
+    	}
+    	
+    	String firstNumNumeratorStr= "";
+    	int firstNumNumeratorInt = 0;
+    	if (firstNumSlash == -1) {
+    		firstNumNumeratorStr = "0";
+    		firstNumNumeratorInt = 0;
+    	}
+    	else if (firstNumSlash != -1 && firstNumUnderScore == -1) {
+    		firstNumNumeratorStr = firstNumber.substring(0, firstNumber.indexOf("/"));
+    		firstNumNumeratorInt = Integer.parseInt(firstNumNumeratorStr);
+    	}
+    	else {
+    		firstNumNumeratorStr = firstNumber.substring(firstNumber.indexOf("_") + 1, firstNumber.indexOf("/"));
+    		firstNumNumeratorInt = Integer.parseInt(firstNumNumeratorStr);
+    	}
+    	
+    	String firstNumDenominatorStr= "";
+    	int firstNumDenominatorInt = 0;
+    	if ( firstNumSlash == -1) {
+    		firstNumDenominatorStr = "1";
+    		firstNumDenominatorInt = Integer.parseInt(firstNumDenominatorStr);
+    	}
+    	else {
+    		firstNumDenominatorStr = firstNumber.substring(firstNumber.indexOf("/")+ 1);
+    		firstNumDenominatorInt = Integer.parseInt(firstNumDenominatorStr);
+    	} 	
+    	// converting from mixed to normal fraction 
+    	if (firstWholeNumberInt >= 0) {
+    		firstNumNumeratorInt = (firstNumDenominatorInt * firstWholeNumberInt) + firstNumNumeratorInt;
+    	}
+    	else if(firstWholeNumberInt < 0) {
+    		firstNumNumeratorInt = ((Math.abs(firstNumDenominatorInt * firstWholeNumberInt)) + firstNumNumeratorInt) * -1;
+    	}
+    	
+    	
+    	/*
+    	 * Notes: 
+    	 * firstNumNumeratorInt: First term's Numerator
+    	 * firstNumDenominatorInt: First term's denominator 
+    	 * firstWholeNumberint: First term's Whole Number
+    	 */
+    	
+    	
+    	// SECOND TERM SEPERATION 
+    	String SecondNumWholeNumberStr = "";
+    	int SecondNumWholeNumberInt= 0;
+    	int SecondNumUnderScore = lastNumber.indexOf("_");
+    	int SecondNumSlash = lastNumber.indexOf("/");
+    	if (SecondNumUnderScore == -1 && SecondNumSlash == -1) {
+    		SecondNumWholeNumberStr = lastNumber;
+    		SecondNumWholeNumberInt = Integer.parseInt(SecondNumWholeNumberStr);
+    	}
+    	else if (SecondNumUnderScore == -1 && SecondNumSlash != -1) {
+    		SecondNumWholeNumberStr = "0";
+    		SecondNumWholeNumberInt = Integer.parseInt(SecondNumWholeNumberStr);
+    	}
+    	else {
+    		SecondNumWholeNumberStr = lastNumber.substring(0, lastNumber.indexOf("_"));
+    		SecondNumWholeNumberInt = Integer.parseInt(SecondNumWholeNumberStr);
+    	}
+    	
+    	String SecondNumNumeratorStr = "";
+    	int SecondNumNumeratorInt = 0;
+    	if (SecondNumSlash == -1) {
+    		SecondNumNumeratorStr = "0";
+    		SecondNumNumeratorInt = 0;
+    	}
+    	else if (SecondNumSlash != -1 && SecondNumUnderScore == -1) {
+    		SecondNumNumeratorStr = lastNumber.substring(0, lastNumber.indexOf("/"));
+    		SecondNumNumeratorInt = Integer.parseInt(SecondNumNumeratorStr);
+    	}
+    	else {
+    		SecondNumNumeratorStr = lastNumber.substring(lastNumber.indexOf("_") + 1, lastNumber.indexOf("/"));
+    		SecondNumNumeratorInt = Integer.parseInt(SecondNumNumeratorStr);
+    	}
+    	
+    	String SecondNumDenominatorStr = "";
+    	int SecondNumDenominatorInt = 1;
+    	if ( SecondNumSlash == -1) {
+    		SecondNumDenominatorStr = "1";
+    		SecondNumDenominatorInt = Integer.parseInt(SecondNumDenominatorStr);
+    	}
+    	else {
+    		SecondNumDenominatorStr = lastNumber.substring(lastNumber.indexOf("/")+ 1);
+    		SecondNumDenominatorInt = Integer.parseInt(SecondNumDenominatorStr);
+    	}
+    	
+    	// converting from mixed fraction to normal fraction 
+    	if (SecondNumWholeNumberInt >= 0) {
+    		SecondNumNumeratorInt = (SecondNumDenominatorInt * SecondNumWholeNumberInt) + SecondNumNumeratorInt;
+    	}
+    	else if(SecondNumWholeNumberInt < 0) {
+    		SecondNumNumeratorInt = ((Math.abs(SecondNumDenominatorInt * SecondNumWholeNumberInt)) + SecondNumNumeratorInt) * -1;
+    	}   	
+    	
+    	
+    	/*
+    	 * Notes: 
+    	 * SecondNumNumeratorInt: Second term's numerator
+    	 * SecondNumWholeNumberInt = Second term's whole number 
+    	 * SecondNumDenominatorInt = Second term's denominator 
+    	 */
+    	
+    	
+    	
+    	//CALCULATIONS
+    	
+    	String answer = "";
+    	int intAnsNumerator = 0;
+    	int intAnsDenominator = 0; 
+    	// multiplication 
+    	if(operator.equals("*")) {    		
+	    	intAnsNumerator = firstNumNumeratorInt * SecondNumNumeratorInt;   	
+	    	intAnsDenominator = firstNumDenominatorInt * SecondNumDenominatorInt;
+	    	
+    		
+    	}
+    	
+    	// division 
+    	else if(operator.contentEquals("/")) {
+    		intAnsNumerator = 0;
+		    intAnsNumerator = firstNumNumeratorInt * SecondNumDenominatorInt;
+		    intAnsDenominator = firstNumDenominatorInt * SecondNumNumeratorInt;
+		       		
+    		
+    	}
+    	
+    	//addition 
+    	
+    	else if(operator.equals("+") || operator.equals("-")) {
+    		intAnsDenominator = firstNumDenominatorInt * SecondNumDenominatorInt;
+    		firstNumNumeratorInt = firstNumNumeratorInt * SecondNumDenominatorInt;
+    		SecondNumNumeratorInt = SecondNumNumeratorInt * firstNumDenominatorInt;
+    		if(operator.equals("+")) {
+    			intAnsNumerator = firstNumNumeratorInt + SecondNumNumeratorInt;
+    			
+    		}
+    		else if(operator.equals("-")) {
+    			intAnsNumerator = firstNumNumeratorInt - SecondNumNumeratorInt;
+    		}
+    	}
+    		
+    	
+    	answer = intAnsNumerator + "/" + intAnsDenominator; 
+    	return answer; 
+    	
+    	 
+    	
+    	
     }
 
     // TODO: Fill in the space below with any helper methods that you think you will need
-    public static String FirstOperand(String num) {
-    	String WholeNumber = "";
-    	int value1 = num.indexOf("_");
-    	int value2 = num.indexOf("/");
-    	if (value1 == -1 && value2 == -1) {
-    		WholeNumber = num; 
-    	}
-    	else if (value1 == -1 && value2 != -1) {
-    		WholeNumber = "0";
-    	}
-    	else {
-    		WholeNumber = num.substring(0, num.indexOf("_"));
-    	}
-    	
-    	String Numerator = "";
-    	if (value2 == -1) {
-    		Numerator = "0";
-    	}
-    	else if (value2 != -1 && value1 == -1) {
-    		Numerator = num.substring(0, num.indexOf("/"));
-    	}
-    	else {
-    		Numerator = num.substring(num.indexOf("_") + 1, num.indexOf("/"));
-    	}
-    	
-    	String denominator = "";
-    	if ( value2 == -1) {
-    		denominator = "1";
-    	}
-    	else {
-    		denominator = num.substring(num.indexOf("/")+ 1);
-    	}
-    	
-    	
-    	String FirstNumString = "whole:" + WholeNumber + " numerator:" + Numerator + " denominator:" + denominator;
-    	return FirstNumString;
-    }
-    
-    public static String SecondOperand(String num) {
-    	String WholeNumber = "";
-    	int value1 = num.indexOf("_");
-    	int value2 = num.indexOf("/");
-    	if (value1 == -1 && value2 == -1) {
-    		WholeNumber = num; 
-    	}
-    	else if (value1 == -1 && value2 != -1) {
-    		WholeNumber = "0";
-    	}
-    	else {
-    		WholeNumber = num.substring(0, num.indexOf("_"));
-    	}
-    	
-    	String Numerator = "";
-    	if (value2 == -1) {
-    		Numerator = "0";
-    	}
-    	else if (value2 != -1 && value1 == -1) {
-    		Numerator = num.substring(0, num.indexOf("/"));
-    	}
-    	else {
-    		Numerator = num.substring(num.indexOf("_") + 1, num.indexOf("/"));
-    	}
-    	
-    	String denominator = "";
-    	if ( value2 == -1) {
-    		denominator = "1";
-    	}
-    	else {
-    		denominator = num.substring(num.indexOf("/")+ 1);
-    	}
-    	
-    	
-    	String SecondNumString = "whole:" + WholeNumber + " numerator:" + Numerator + " denominator:" + denominator;
-    	return SecondNumString;
-    }
 }
 
 
+    
+ 
 
 
 
 
 
 
-;
+
+
