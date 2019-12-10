@@ -12,7 +12,7 @@ public class FracCalc {
     	String fraction = "";
     	while (!fraction.equals("quit")) {
     		Scanner userInput = new Scanner(System.in);
-    		System.out.println("Enter a fraction experession");
+    		System.out.println("Enter a fraction expression");
     		fraction = userInput.nextLine();
     		if (!fraction.equals ("quit")) {
     			System.out.println(produceAnswer(fraction));
@@ -44,8 +44,11 @@ public class FracCalc {
     	
     	end = input.length();
     	space = input.indexOf(" ");
+    	if(space == -1) {
+    		return "ERROR: Input is in an invalid format";
+    	}
     	lastNumStart = space + 3;   	
-    	firstNumEnd = space;   	
+    	firstNumEnd = space;
     	operatorIndex = input.indexOf(" ") + 1;
     	
     	// separated operator, first term and second term
@@ -80,11 +83,11 @@ public class FracCalc {
     		firstNumNumeratorStr = "0";
     		firstNumNumeratorInt = 0;
     	}
-    	else if (firstNumSlash != -1 && firstNumUnderScore == -1) {
+    	if (firstNumSlash != -1 && firstNumUnderScore == -1) {
     		firstNumNumeratorStr = firstNumber.substring(0, firstNumber.indexOf("/"));
     		firstNumNumeratorInt = Integer.parseInt(firstNumNumeratorStr);
     	}
-    	else {
+    	else if(firstNumSlash != -1 && firstNumUnderScore != -1){
     		firstNumNumeratorStr = firstNumber.substring(firstNumber.indexOf("_") + 1, firstNumber.indexOf("/"));
     		firstNumNumeratorInt = Integer.parseInt(firstNumNumeratorStr);
     	}
@@ -140,18 +143,18 @@ public class FracCalc {
     		SecondNumNumeratorStr = "0";
     		SecondNumNumeratorInt = 0;
     	}
-    	else if (SecondNumSlash != -1 && SecondNumUnderScore == -1) {
+    	if (SecondNumSlash != -1 && SecondNumUnderScore == -1) {
     		SecondNumNumeratorStr = lastNumber.substring(0, lastNumber.indexOf("/"));
     		SecondNumNumeratorInt = Integer.parseInt(SecondNumNumeratorStr);
     	}
-    	else {
+    	else if(SecondNumSlash != -1 && SecondNumUnderScore != -1){
     		SecondNumNumeratorStr = lastNumber.substring(lastNumber.indexOf("_") + 1, lastNumber.indexOf("/"));
     		SecondNumNumeratorInt = Integer.parseInt(SecondNumNumeratorStr);
     	}
     	
     	String SecondNumDenominatorStr = "";
     	int SecondNumDenominatorInt = 1;
-    	if ( SecondNumSlash == -1) {
+    	if (SecondNumSlash == -1) {
     		SecondNumDenominatorStr = "1";
     		SecondNumDenominatorInt = Integer.parseInt(SecondNumDenominatorStr);
     	}
@@ -169,6 +172,7 @@ public class FracCalc {
     	}   	
     	
     	
+
     	/*
     	 * Notes: 
     	 * SecondNumNumeratorInt: Second term's numerator
@@ -181,14 +185,20 @@ public class FracCalc {
     	//CALCULATIONS
     	
     	String answer = "";
+    	
+    	//Extra credit? 
+    	if(firstNumDenominatorInt == 0 || SecondNumDenominatorInt == 0) {
+    		answer = "ERROR: Cannot divide by zero";
+    		return answer;
+    	}
+    	
     	int intAnsNumerator = 0;
     	int intAnsDenominator = 0; 
+    	
     	// multiplication 
-    	if(operator.equals("*")) {    		
-	    	intAnsNumerator = firstNumNumeratorInt * SecondNumNumeratorInt;   	
-	    	intAnsDenominator = firstNumDenominatorInt * SecondNumDenominatorInt;
-	    	
-    		
+    	if(operator.equals("*")) {	    	
+    			intAnsNumerator = firstNumNumeratorInt * SecondNumNumeratorInt;   	
+    			intAnsDenominator = firstNumDenominatorInt * SecondNumDenominatorInt;   		
     	}
     	
     	// division 
@@ -204,7 +214,7 @@ public class FracCalc {
     	
     	else if(operator.equals("+") || operator.equals("-")) {
     		intAnsDenominator = firstNumDenominatorInt * SecondNumDenominatorInt;
-    		firstNumNumeratorInt = firstNumNumeratorInt * SecondNumDenominatorInt;
+    		firstNumNumeratorInt =  firstNumNumeratorInt * SecondNumDenominatorInt;
     		SecondNumNumeratorInt = SecondNumNumeratorInt * firstNumDenominatorInt;
     		if(operator.equals("+")) {
     			intAnsNumerator = firstNumNumeratorInt + SecondNumNumeratorInt;
@@ -214,11 +224,62 @@ public class FracCalc {
     			intAnsNumerator = firstNumNumeratorInt - SecondNumNumeratorInt;
     		}
     	}
-    		
+    	 
     	
-    	answer = intAnsNumerator + "/" + intAnsDenominator; 
-    	return answer; 
+    	//REDUCING ANSWER   	
+    	int intAnsNumeratorAbs = Math.abs(intAnsNumerator);
+    	int intAnsDenominatorAbs = Math.abs(intAnsDenominator);	
     	
+    	// finding if negative of positive 
+    	String ansSign = "";
+    	if(intAnsNumerator < 0 && intAnsDenominator < 0 ) {
+    		ansSign = "";
+    	}
+    	else if(intAnsNumerator < 0 || intAnsDenominator < 0) {
+    		ansSign = "-";
+    	}
+    	
+    	
+    	// if simple divisible to give a whole number. example: 6/3 = 2
+    	if(intAnsNumeratorAbs % intAnsDenominatorAbs == 0) {
+    		int ans = intAnsNumeratorAbs / intAnsDenominatorAbs;
+    		answer = "" + ans;
+    	}
+    	
+    	// reducing answer using GCF
+    	else if(intAnsNumeratorAbs < intAnsDenominatorAbs) {
+    		for(int i = intAnsNumeratorAbs; i > 0; i-- ) {
+    			if(intAnsNumeratorAbs % i == 0 && intAnsDenominatorAbs % i == 0) {
+    			
+	    			intAnsNumeratorAbs /= i;
+	    	    	intAnsDenominatorAbs /= i;
+    			}
+    		}
+    		answer = intAnsNumeratorAbs + "/" + intAnsDenominatorAbs;
+    	}
+    	//reducing answer and converting into mixed fraction
+    	else if(intAnsNumeratorAbs > intAnsDenominatorAbs) {
+    		for(int i = intAnsDenominatorAbs; i > 0; i-- ) {
+    			if(intAnsNumeratorAbs % i == 0 && intAnsDenominatorAbs % i == 0) {
+    			
+	    			intAnsNumeratorAbs /= i;
+	    	    	intAnsDenominatorAbs /= i;
+    			}
+    		}
+    		int intAnsWholeNum = 0;
+    		intAnsWholeNum = intAnsNumeratorAbs / intAnsDenominatorAbs;
+    		intAnsNumeratorAbs = Math.abs(intAnsNumeratorAbs % intAnsDenominatorAbs);
+    		answer = intAnsWholeNum + "_" + intAnsNumeratorAbs + "/" + intAnsDenominatorAbs;
+    	}
+    
+    	// assigning answer to correct sign 
+    	answer = ansSign + answer;
+    	
+    	if (answer.equals("-0")) {
+    		answer = "0";
+    	}
+
+    	return answer;
     	 
     	
     	
